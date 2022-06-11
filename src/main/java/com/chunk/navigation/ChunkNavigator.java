@@ -36,7 +36,7 @@ public class ChunkNavigator {
             System.out.print(currentChar);
             if(isOpeningChar(currentChar)){
                 traversedChars.push(currentChar);
-            }
+            }   
         }
         System.out.println(traversedChars);
         return errorScore;
