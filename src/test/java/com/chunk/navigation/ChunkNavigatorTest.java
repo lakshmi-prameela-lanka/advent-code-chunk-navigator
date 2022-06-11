@@ -2,15 +2,22 @@ package com.chunk.navigation;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChunkNavigatorTest {
+
     @Test
-    void getErrorScoreOfaLine() {
+    void getErrorScoreOfaLineTest1() {
         // given
         String line = "{([(<{}[<>[]}>{[]{[(<()>";
-        ChunkNavigator.getErrorScoreOfaLine(line);
+        assertEquals(1197,ChunkNavigator.getErrorScoreOfaLine(line));
+    }
+
+    @Test
+    void getErrorScoreOfaLineTest2() {
+        // given
+        String line = "[<(<(<(<{}))><([]([]()";
+        assertEquals(3,ChunkNavigator.getErrorScoreOfaLine(line));
     }
 
     @Test
