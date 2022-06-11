@@ -2,6 +2,8 @@ package com.chunk.navigation;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChunkNavigatorTest {
@@ -18,6 +20,11 @@ public class ChunkNavigatorTest {
         // given
         String line = "[<(<(<(<{}))><([]([]()";
         assertEquals(3,ChunkNavigator.getErrorScoreOfaLine(line));
+    }
+
+    @Test
+    void calTotSyntaxErrorScoreTest(){
+        assertEquals(25194,ChunkNavigator.calTotSyntaxErrorScore(List.of("<{([([[(<>()){}]>(<<{{","[{[{({}]{}}([{[{{{}}([]")));
     }
 
     @Test
