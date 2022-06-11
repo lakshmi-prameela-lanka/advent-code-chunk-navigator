@@ -22,4 +22,14 @@ public class ChunkNavigatorTest {
     void isOpeningCharTestFalse() {
         assertFalse(ChunkNavigator.isOpeningChar(']'));
     }
+
+     @Test
+    void isThisClosingCharOfPrecedingCharTrue(){
+         assertTrue(ChunkNavigator.isCurrentCharClosingOfPrevious(')','('));
+     }
+
+    @Test
+    void isThisClosingCharOfPrecedingCharFalse(){
+        assertFalse(ChunkNavigator.isCurrentCharClosingOfPrevious('(','}'));
+    }
 }

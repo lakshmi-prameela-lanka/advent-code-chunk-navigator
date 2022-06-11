@@ -36,7 +36,12 @@ public class ChunkNavigator {
             System.out.print(currentChar);
             if(isOpeningChar(currentChar)){
                 traversedChars.push(currentChar);
-            }   
+            }  else{
+                Character lastOpenChar = traversedChars.pop();
+                if(isCurrentCharClosingOfPrevious(currentChar,lastOpenChar)){
+                    // if it matches ignore
+                }
+            }
         }
         System.out.println(traversedChars);
         return errorScore;
@@ -44,5 +49,10 @@ public class ChunkNavigator {
 
     public static boolean isOpeningChar(Character character){
         return openingChars.contains(character);
+    }
+
+    public static boolean isCurrentCharClosingOfPrevious(Character currentChar, Character previousChar){
+        return null!=legalChunkCharMap.get(previousChar)  &&
+                legalChunkCharMap.get(previousChar).equals(currentChar);
     }
 }
