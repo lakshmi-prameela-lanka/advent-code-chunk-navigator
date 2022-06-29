@@ -3,6 +3,7 @@ package com.chunk.navigation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -43,16 +44,31 @@ public class ChunkNavigator {
 
     public static int calTotSyntaxErrorScore(List<String> lines) {
         int totNavSysErrorScore = 0;
+        List<String> incompleteLines = new ArrayList<>();
+        List<String> corruptedLines = new ArrayList<>();
+        System.out.println("Total Lines :: " + lines.size());
         for (String chunk : lines) {
-            totNavSysErrorScore = totNavSysErrorScore + getErrorScoreOfaLine(chunk);
+            int errorScore = 0;
+            Stack<Character> traversedChars = new Stack<>();
+            boolean isCorruptedLine = isCorruptedLine(chunk, errorScore, traversedChars);
+            if (!isCorruptedLine) {
+                incompleteLines.add(chunk);
+            } else {
+                corruptedLines.add(chunk);
+            }
+            // System.out.println("Error Score for each line :: " + errorScore);
+            totNavSysErrorScore = totNavSysErrorScore + errorScore;
         }
+        System.out.println("Incomplete Lines :: " + incompleteLines.size());
+
+        System.out.println("Corrupted Lines :: " + corruptedLines.size());
+        System.out.println(incompleteLines);
+        System.out.println(corruptedLines);
         return totNavSysErrorScore;
     }
 
-
-    public static int getErrorScoreOfaLine(String line) {
-        int errorScore = 0;
-        Stack<Character> traversedChars = new Stack<>();
+    private static boolean isCorruptedLine(String line, int errorScore, Stack<Character> traversedChars) {
+        boolean isCorruptedLine = false;
         for (Character currentChar : line.toCharArray()) {
             if (isOpeningChar(currentChar)) {
                 traversedChars.push(currentChar);
@@ -61,12 +77,12 @@ public class ChunkNavigator {
                 if (!isCurrentCharClosingOfPrevious(currentChar, lastOpenChar)) {
                     System.out.println("first illegal character found in the line '" + line + "' was ::  " + currentChar);
                     errorScore = errorScore + errorScoreCharMap.get(currentChar);
+                    isCorruptedLine = true;
                     break;
                 }
             }
         }
-        // System.out.println("Error Score for each line :: " + errorScore);
-        return errorScore;
+        return isCorruptedLine;
     }
 
     public static boolean isOpeningChar(Character character) {
