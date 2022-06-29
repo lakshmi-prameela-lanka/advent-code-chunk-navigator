@@ -3,10 +3,7 @@ package com.chunk.navigation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +26,7 @@ public class ChunkNavigator {
 
     static Map<Character, Character> legalChunkCharMap = Map.of('(', ')', '[', ']', '{', '}', '<', '>');
     static Map<Character, Integer> errorScoreCharMap = Map.of(')', 3, ']', 57, '}', 1197, '>', 25137);
+    static Map<Character, Integer> autoCompleteScoreMap = Map.of(')', 1, ']', 2, '}', 3, '>', 4);
 
     public static void main(String[] args) {
         List<String> allLines = null;
@@ -40,6 +38,35 @@ public class ChunkNavigator {
         }
         var totNavSysErrorScore = calTotSyntaxErrorScore(allLines);
         System.out.println("Total Syntax Score for All Errors  :: " + totNavSysErrorScore);
+    }
+
+    private static void calAutoCompleteScore(List<String> lines) {
+        List<Long> incompleteLinesScore = new ArrayList<>();
+        for (String incompleteLine : lines) {
+            Long autoCompleteScore = 0L;
+            Stack<Character> traversedChars = new Stack<>();
+            for (Character currentChar : incompleteLine.toCharArray()) {
+                if (isOpeningChar(currentChar)) {
+                    traversedChars.push(currentChar);
+                } else {
+                    traversedChars.pop();
+                }
+            }
+            System.out.println("Traversed Chars :: " + traversedChars);
+            // read the list from stack
+            while (!traversedChars.empty()) {
+                char closingChar = legalChunkCharMap.get(traversedChars.pop());
+                autoCompleteScore = (autoCompleteScore * 5) + autoCompleteScoreMap.get(closingChar);
+                System.out.println(autoCompleteScore);
+            }
+            System.out.println("Auto complete score :: for Line :: " + incompleteLine + ":: " + autoCompleteScore);
+            incompleteLinesScore.add(autoCompleteScore);
+        }
+        System.out.println(incompleteLinesScore.size());
+        // sort the list
+        Collections.sort(incompleteLinesScore);
+        System.out.println(incompleteLinesScore);
+        System.out.println("Middles score is " + incompleteLinesScore.get(25));
     }
 
     public static int calTotSyntaxErrorScore(List<String> lines) {
@@ -64,6 +91,7 @@ public class ChunkNavigator {
         System.out.println("Corrupted Lines :: " + corruptedLines.size());
         System.out.println(incompleteLines);
         System.out.println(corruptedLines);
+        calAutoCompleteScore(incompleteLines);
         return totNavSysErrorScore;
     }
 
