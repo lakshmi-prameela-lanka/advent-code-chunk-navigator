@@ -1,8 +1,13 @@
 package com.chunk.navigation;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ChunkNavigator {
 
@@ -25,6 +30,13 @@ public class ChunkNavigator {
     static Map<Character, Integer> errorScoreCharMap = Map.of(')', 3, ']', 57, '}', 1197, '>', 25137);
 
     public static void main(String[] args) {
+        List<String> allLines = null;
+        try (Stream<String> lines = Files.lines(Paths.get("src/main/resources/input_lines.txt"))) {
+            allLines = lines.collect(Collectors.toList());
+            System.out.println(allLines);
+        } catch (IOException e) {
+            System.out.println("Input file not found , Please try again");
+        }
         var totNavSysErrorScore = calTotSyntaxErrorScore(allLines);
         System.out.println("Total Syntax Score for All Errors  :: " + totNavSysErrorScore);
     }
@@ -49,6 +61,7 @@ public class ChunkNavigator {
                 if (!isCurrentCharClosingOfPrevious(currentChar, lastOpenChar)) {
                     System.out.println("first illegal character found in the line '" + line + "' was ::  " + currentChar);
                     errorScore = errorScore + errorScoreCharMap.get(currentChar);
+                    break;
                 }
             }
         }
